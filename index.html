@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Teclado Virtual Multifuncional e Acessível</title>
+  <title>Quadro de Comunicação Alternativa Virtual e Multifuncional</title>
   <style>
     /* Variáveis CSS para facilitar o ajuste dos tamanhos e cores */
     :root {
@@ -11,10 +11,10 @@
       --text-color: #333;
       --key-bg: #fff;
       --key-border: #4A90E2;
-      --key-size: 90px;            /* Altura das teclas (aumentada) */
-      --key-width: 140px;          /* Largura das teclas (aumentada) */
+      --key-size: 90px;            /* Altura das teclas */
+      --key-width: 140px;          /* Largura das teclas */
       --special-key-width: 220px;   /* Largura para teclas especiais */
-      --img-button-size: 220px;     /* Tamanho dos botões de imagem (largura e altura) */
+      --img-button-size: 220px;     /* Tamanho dos botões de imagem */
       --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       --transition-speed: 0.3s;
     }
@@ -42,6 +42,7 @@
     h2 {
       margin-bottom: 10px;
       text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+      text-align: center;
     }
 
     /* Campo de exibição e sugestões */
@@ -180,7 +181,7 @@
       background: #f9f9f9;
     }
 
-    /* Teclas especiais com largura e altura definidas separadamente */
+    /* Teclas especiais */
     .special-key {
       width: var(--special-key-width);
       height: var(--key-size);
@@ -190,7 +191,7 @@
       justify-content: center;
     }
 
-    /* Área para botões de imagem */
+    /* Área para botões de imagem ou categorias */
     .img-container {
       display: flex;
       flex-wrap: wrap;
@@ -214,6 +215,22 @@
       transform: scale(1.05);
       box-shadow: 0 8px 16px rgba(0,0,0,0.2);
     }
+
+    /* Botão de voltar para o menu principal da categoria */
+    .back-button {
+      padding: 10px 20px;
+      font-size: 1.2em;
+      background: #FF6666;
+      border: 2px solid #CC0000;
+      border-radius: 8px;
+      color: #fff;
+      cursor: pointer;
+      transition: transform 0.1s;
+    }
+
+    .back-button:hover {
+      transform: scale(1.05);
+    }
   </style>
 </head>
 <body>
@@ -235,6 +252,8 @@
       <option value="AZERTY">AZERTY</option>
       <option value="NUMERIC">Numérico</option>
     </select>
+
+    </select>
     <button id="themeToggle">Alternar Tema</button>
     <button id="copyBtn">Copiar</button>
     <button id="shareBtn">Compartilhar</button>
@@ -248,35 +267,24 @@
     <!-- As teclas serão renderizadas via JavaScript -->
   </div>
 
-  <!-- Área para botões de imagem -->
-  <h2>Botões com Imagem</h2>
-  <div class="img-container" id="imgContainer">
-    <!-- Cada imagem usa o atributo data-phrase para definir o texto que será inserido -->
-    <img src="https://cdn.pixabay.com/photo/2025/03/21/00/27/00-27-00-582__340.jpg" alt="Botão 17" class="img-button" data-phrase=" Talvez, eu não sei ">
-    <img src="https://cdn.pixabay.com/photo/2025/03/21/00/26/00-26-52-375__340.jpg" alt="Botão 18" class="img-button" data-phrase=" Sim ">
-    <img src="https://cdn.pixabay.com/photo/2025/03/21/00/26/00-26-58-936__340.jpg" alt="Botão 19" class="img-button" data-phrase=" Não ">
-    <img src="https://cdn.pixabay.com/photo/2025/03/20/19/22/19-22-41-622_1280.jpg" alt="Botão 1" class="img-button" data-phrase=" Chamar o médico ">
-    <img src="https://cdn.pixabay.com/photo/2025/03/20/19/56/19-56-29-71_1280.jpg" alt="Botão 2" class="img-button" data-phrase=" Chamar o fisioterapeuta ">
-    <img src="https://cdn.pixabay.com/photo/2025/03/20/20/08/20-08-40-829_1280.jpg" alt="Botão 3" class="img-button" data-phrase=" Chamar Enfermagem ">
-    <img src="https://cdn.pixabay.com/photo/2025/03/20/19/56/stress-9483709_1280.jpg" alt="Botão 4" class="img-button" data-phrase=" Estou com dor de cabeça ">
-    <img src="https://cdn.pixabay.com/photo/2025/03/20/19/56/back-9483717__340.jpg" alt="Botão 5" class="img-button" data-phrase=" Estou com dor nas costas ">
-    <img src="https://cdn.pixabay.com/photo/2025/03/20/19/56/pain-9483710__340.jpg" alt="Botão 6" class="img-button" data-phrase=" Estou com dor na barriga ">
-    <img src="https://cdn.pixabay.com/photo/2025/03/20/19/56/chest-9483697__340.jpg" alt="Botão 7" class="img-button" data-phrase=" Estou com dor no peito ">
-    <img src="https://cdn.pixabay.com/photo/2025/03/20/19/56/19-56-29-848__340.jpg" alt="Botão 8" class="img-button" data-phrase=" Estou com falta de ar ">
-    <img src="https://cdn.pixabay.com/photo/2025/03/21/00/08/00-08-33-672__340.jpg" alt="Botão 9" class="img-button" data-phrase=" Estou com medo ">
-    <img src="https://cdn.pixabay.com/photo/2025/03/20/19/56/hungry-9483699__340.jpg" alt="Botão 10" class="img-button" data-phrase=" Estou com fome ">
-    <img src="https://cdn.pixabay.com/photo/2025/03/21/00/10/00-10-32-788__340.jpg" alt="Botão 11" class="img-button" data-phrase=" Estou com sede ">
-    <img src="https://cdn.pixabay.com/photo/2025/03/20/19/56/cold-9483712__340.jpg" alt="Botão 23" class="img-button" data-phrase=" Estou com frio ">
-    <img src="https://cdn.pixabay.com/photo/2025/03/20/19/56/sun-9483704__340.jpg" alt="Botão 23" class="img-button" data-phrase=" Estou com calor">
-    <img src="https://cdn.pixabay.com/photo/2025/03/20/19/56/oxygen-9483701__340.jpg" alt="Botão 12" class="img-button" data-phrase=" Eu quero oxigênio ">
-    <img src="https://cdn.pixabay.com/photo/2025/03/20/19/56/ventilation-9483703__340.jpg" alt="Botão 13" class="img-button" data-phrase=" Eu quero ser aspirado ">
-    <img src="https://cdn.pixabay.com/photo/2025/03/21/00/21/00-21-15-70__340.jpg" alt="Botão 15" class="img-button" data-phrase=" Eu quero que troque a fralda ">
-    <img src="https://cdn.pixabay.com/photo/2025/03/20/19/56/sit-9483716__340.jpg" alt="Botão 14" class="img-button" data-phrase=" Eu quero sentar ">
-    <img src="https://cdn.pixabay.com/photo/2025/03/20/19/56/walking-9483711__340.jpg" alt="Botão 16" class="img-button" data-phrase=" Eu quero andar ">
-    <img src="https://cdn.pixabay.com/photo/2025/03/20/19/56/bathroom-9483698__340.jpg" alt="Botão 20" class="img-button" data-phrase=" Eu quero ir ao banheiro ">
-    <img src="https://cdn.pixabay.com/photo/2025/03/20/19/56/shower-9483702__340.jpg" alt="Botão 21" class="img-button" data-phrase=" Eu quero tomar banho ">
-    <img src="https://cdn.pixabay.com/photo/2025/03/20/19/56/family-9483713__340.jpg" alt="Botão 22" class="img-button" data-phrase=" Eu quero falar com minha família ">
+  <!-- Área para as categorias de botões de imagem -->
+  <h2>Menu de Categorias</h2>
+  <div class="img-container" id="categoryContainer">
+    <!-- Botões de categoria: cada um possui data-category para identificar a categoria -->
+    <img src="https://8upload.com/preview/67deab9da55c3/Call_doctor__7_.jpg" alt="Respostas" class="img-button" data-category="respostas">
+    <img src="https://8upload.com/preview/67deeb4b67214/Call_doctor__15_.jpg" alt="Perguntas" class="img-button" data-category="perguntas">
+    <img src="https://8upload.com/preview/67def03d8aff2/Call_doctor__21_.jpg" alt="tabela" class="img-button" data-category="tabela"> 
+    <img src="https://8upload.com/preview/67deaa0417e7c/Call_doctor__6_.jpg" alt="Chamar" class="img-button" data-category="chamar">
+    <img src="https://8upload.com/preview/67dea93306d15/Call_doctor__5_.jpg" alt="Dor" class="img-button" data-category="dor">
+    <img src="https://8upload.com/preview/67deac3a63ee6/Call_doctor__8_.jpg" alt="Mobilidade" class="img-button" data-category="mobilidade">
+    <img src="https://8upload.com/preview/67deadf6a9bb9/Call_doctor__9_.jpg" alt="Comida" class="img-button" data-category="comida">
+    <img src="https://8upload.com/preview/67deb2b51163e/37.jpg" alt="Corpo" class="img-button" data-category="corpo">
       </div>
+
+  <!-- Área para os botões de imagem dentro de uma categoria -->
+  <div class="img-container" id="imagesContainer" style="display: none;">
+    <!-- Botões serão renderizados via JavaScript -->
+  </div>
 
   <!-- Elemento de áudio para feedback sonoro -->
   <audio id="beepSound" src="https://www.soundjay.com/button/beep-07.wav"></audio>
@@ -285,6 +293,7 @@
     const displayField = document.getElementById('display');
     const keyboardContainer = document.getElementById('keyboardContainer');
     const layoutSelect = document.getElementById('layoutSelect');
+    const targetLanguageSelect = document.getElementById('targetLanguage');
     const suggestionsDiv = document.getElementById('suggestions');
     const beepSound = document.getElementById('beepSound');
     const themeToggle = document.getElementById('themeToggle');
@@ -295,7 +304,11 @@
     const incSizeBtn = document.getElementById('incSizeBtn');
     const decSizeBtn = document.getElementById('decSizeBtn');
 
-    // Layouts disponíveis
+    // Containers para as categorias e para as imagens de uma categoria
+    const categoryContainer = document.getElementById('categoryContainer');
+    const imagesContainer = document.getElementById('imagesContainer');
+
+    // Layouts do teclado
     const layouts = {
       "QWERTY": [
         ["Q","W","E","R","T","Y","U","I","O","P"],
@@ -315,15 +328,268 @@
       ]
     };
 
-    // Palavras para autocompletar
+    // Sugestões para autocompletar
     const wordSuggestions = ["Eu", "quero", "comer", "beber", "dormir", "brincar", "jogar", "aprender", "correr", "obrigado"];
 
-    // Renderiza o teclado conforme o layout selecionado
+    // Dados de imagens para cada categoria
+    const categories = {
+      chamar: [
+        {
+          src: "https://cdn.pixabay.com/photo/2025/03/20/19/22/19-22-41-622_1280.jpg",
+          alt: "Chamar o médico",
+          phrase: "Chamar o médico"
+        },
+        {
+          src: "https://cdn.pixabay.com/photo/2025/03/20/19/56/19-56-29-71_1280.jpg",
+          alt: "Chamar o fisioterapeuta",
+          phrase: "Chamar o fisioterapeuta"
+        },
+        {
+          src: "https://cdn.pixabay.com/photo/2025/03/20/20/08/20-08-40-829_1280.jpg",
+          alt: "Chamar Enfermagem",
+          phrase: "Chamar Enfermagem"
+        },
+       {
+          src: "https://cdn.pixabay.com/photo/2025/03/20/19/56/family-9483713__340.jpg",
+          alt: "Falar com minha família",
+          phrase: "Falar com minha família"
+        }
+      ],
+      perguntas: [
+        {
+          src: "https://8upload.com/preview/67deec028dd00/Call_doctor__16_.jpg",
+          alt: "Onde",
+          phrase: "Onde eu estou?"
+        },
+        {
+          src: "https://8upload.com/preview/67deec64d8746/Call_doctor__17_.jpg",
+          alt: "Dia",
+          phrase: "Que dia é hoje?"
+        },
+        {
+          src: "https://8upload.com/preview/67deec9827c31/Call_doctor__18_.jpg",
+          alt: "Acontecendo",
+          phrase: "O que está acontecendo?"
+        },
+        {
+          src: "https://8upload.com/preview/67deecb9eb1f8/Call_doctor__19_.jpg",
+          alt: "Como",
+          phrase: "Como eu estou?"
+        },
+        {
+          src: "https://8upload.com/preview/67deecd532eef/Call_doctor__20_.jpg",
+          alt: "Por que",
+          phrase: "Por que estou aqui?"
+        }
+      ],
+      respostas: [
+        {
+          src: "https://cdn.pixabay.com/photo/2025/03/21/00/26/00-26-58-936__340.jpg",
+          alt: "Não",
+          phrase: "Não"
+        },
+        {
+          src: "https://cdn.pixabay.com/photo/2025/03/21/00/26/00-26-52-375__340.jpg",
+          alt: "Sim",
+          phrase: "Sim"
+        },
+        {
+          src: "https://cdn.pixabay.com/photo/2025/03/21/00/27/00-27-00-582__340.jpg",
+          alt: "Talvez",
+          phrase: "Talvez eu não sei"
+        }
+      ],
+      dor: [
+        {
+          src: "https://cdn.pixabay.com/photo/2025/03/20/19/56/stress-9483709_1280.jpg",
+          alt: "Dor de cabeça",
+          phrase: "Estou com dor de cabeça"
+        },
+        {
+          src: "https://cdn.pixabay.com/photo/2025/03/20/19/56/back-9483717__340.jpg",
+          alt: "Dor nas costas",
+          phrase: "Estou com dor nas costas"
+        },
+        {
+          src: "https://cdn.pixabay.com/photo/2025/03/20/19/56/pain-9483710__340.jpg",
+          alt: "Dor na barriga",
+          phrase: "Estou com dor na barriga"
+        },
+        {
+          src: "https://cdn.pixabay.com/photo/2025/03/20/19/56/chest-9483697__340.jpg",
+          alt: "Dor no peito",
+          phrase: "Estou com dor no peito"
+        },
+        {
+          src: "https://cdn.pixabay.com/photo/2025/03/20/19/56/19-56-29-848__340.jpg",
+          alt: "Falta de ar",
+          phrase: "Estou com falta de ar"
+        },
+        {
+          src: "https://cdn.pixabay.com/photo/2025/03/20/19/56/ventilation-9483703__340.jpg",
+          alt: "Eu quero ser aspirado",
+          phrase: "Eu quero ser aspirado"
+        },
+        {
+          src: "https://cdn.pixabay.com/photo/2025/03/21/00/21/00-21-15-70__340.jpg",
+          alt: "fralda",
+          phrase: "Eu quero que troque a fralda"
+        },
+
+        {
+          src: "https://cdn.pixabay.com/photo/2025/03/20/19/56/oxygen-9483701__340.jpg",
+          alt: "Eu quero oxigênio",
+          phrase: "Eu quero oxigênio"
+        },
+        {
+          src: "https://cdn.pixabay.com/photo/2025/03/20/19/56/cold-9483712__340.jpg",
+          alt: "Estou com frio",
+          phrase: "Estou com frio"
+        },
+        {
+          src: "https://cdn.pixabay.com/photo/2025/03/20/19/56/sun-9483704__340.jpg",
+          alt: "Estou com calor",
+          phrase: "Estou com calor"
+        },
+        {
+          src: "https://cdn.pixabay.com/photo/2025/03/21/00/08/00-08-33-672__340.jpg",
+          alt: "Medo",
+          phrase: "Estou com medo"
+        }
+      ],
+    tabela: [
+        {
+          src: "https://8upload.com/preview/67def1faa63af/Call_doctor__23_.jpg",
+          alt: "Coça",
+          phrase: "Sinto coceira"
+        },
+        {
+          src: "https://8upload.com/preview/67def225e099e/Call_doctor__24_.jpg",
+          alt: "Agulha",
+          phrase: "Sinto dor em agulhada"
+        },
+        {
+          src: "https://8upload.com/preview/67def24b11f4a/Call_doctor__25_.jpg",
+          alt: "Geral",
+          phrase: "Dói"
+        },
+        {
+          src: "https://8upload.com/preview/67def27fa973e/Call_doctor__26_.jpg",
+          alt: "Queimação",
+          phrase: "Sinto dor em queimação"
+        },
+       {
+          src: "https://8upload.com/preview/67def2ad45a8e/Call_doctor.png",
+          alt: "Mexer",
+          phrase: "Não consigo mexer"
+        }
+      ],
+ corpo: [
+        {
+          src: "https://8upload.com/preview/67deb953ba218/Call_doctor__14_.jpg",
+          alt: "Dor",
+          phrase: "Está doendo"
+        },
+        {
+          src: "https://8upload.com/preview/67deb90a0190f/Call_doctor__13_.jpg",
+          alt: "Coçar",
+          phrase: "Está coçando"
+        },
+        {
+          src: "https://8upload.com/preview/67deb36898536/38.jpg",
+          alt: "Cabeça",
+          phrase: "Cabeça"
+        },
+        {
+          src: "https://8upload.com/preview/67deb3cb78a50/39.jpg",
+          alt: "Tronco",
+          phrase: "Tronco"
+        },
+      {
+          src: "https://8upload.com/preview/67deb47983de9/40.jpg",
+          alt: "Costas",
+          phrase: "Costas"
+        },
+
+      {
+          src: "https://8upload.com/preview/67deb56d9b295/43.jpg",
+          alt: "Pernas",
+          phrase: "Pernas"
+        },
+      {
+          src: "https://8upload.com/preview/67deb5139f957/42.jpg",
+          alt: "Quadril",
+          phrase: "Quadril"
+        },
+      {
+          src: "https://8upload.com/preview/67deb612268d1/44.jpg",
+          alt: "Pés",
+          phrase: "Pés"
+        },
+      {
+          src: "https://8upload.com/preview/67deb68a974d0/Call_doctor__12_.jpg",
+          alt: "Mãos",
+          phrase: "Mãos"
+        },
+        {
+          src: "https://8upload.com/preview/67deb4f4d56e7/41.jpg",
+          alt: "Braços",
+          phrase: "Braços"
+        }
+      ],
+
+ comida: [
+        {
+          src: "https://cdn.pixabay.com/photo/2025/03/20/19/56/hungry-9483699__340.jpg",
+          alt: "Estou com fome",
+          phrase: "Estou com fome"
+        },
+        {
+          src: "https://cdn.pixabay.com/photo/2025/03/21/00/10/00-10-32-788__340.jpg",
+          alt: "Estou com sede",
+          phrase: "Estou com sede"
+        },
+      {
+          src: "https://8upload.com/preview/67deaeeb6b03d/Call_doctor__11_.jpg",
+          alt: "Açúcar",
+          phrase: "Precisa de açúcar"
+        },
+        {
+          src: "https://8upload.com/preview/67deaeab93941/Call_doctor__10_.jpg",
+          alt: "Sal",
+          phrase: "Precisa de sal"
+        }
+      ],
+      mobilidade: [
+        {
+          src: "https://cdn.pixabay.com/photo/2025/03/20/19/56/shower-9483702__340.jpg",
+          alt: "banho",
+          phrase: "Eu quero tomar banho"
+        },
+       {
+          src: "https://cdn.pixabay.com/photo/2025/03/20/19/56/bathroom-9483698__340.jpg",
+          alt: "banheiro",
+          phrase: "Eu quero ir ao banheiro"
+        },
+
+        {
+          src: "https://cdn.pixabay.com/photo/2025/03/20/19/56/sit-9483716__340.jpg",
+          alt: "Eu quero sentar",
+          phrase: "Eu quero sentar"
+        },
+        {
+          src: "https://cdn.pixabay.com/photo/2025/03/20/19/56/walking-9483711__340.jpg",
+          alt: "Eu quero andar",
+          phrase: "Eu quero andar"
+        }
+      ]
+    };
+
+    // Função para renderizar o teclado (mesmo de antes)
     function renderKeyboard(layoutName) {
       keyboardContainer.innerHTML = "";
       const rows = layouts[layoutName];
       if (!rows) return;
-
       rows.forEach(row => {
         const rowDiv = document.createElement('div');
         rowDiv.classList.add('key-row');
@@ -340,11 +606,9 @@
         });
         keyboardContainer.appendChild(rowDiv);
       });
-
       // Linha de teclas especiais
       const specialRow = document.createElement('div');
       specialRow.classList.add('key-row');
-
       const backspace = document.createElement('div');
       backspace.classList.add('key', 'special-key');
       backspace.textContent = 'Back';
@@ -354,7 +618,6 @@
         updateSuggestions();
       });
       specialRow.appendChild(backspace);
-
       const space = document.createElement('div');
       space.classList.add('key', 'special-key');
       space.textContent = 'Espaço';
@@ -364,7 +627,6 @@
         updateSuggestions();
       });
       specialRow.appendChild(space);
-
       const clear = document.createElement('div');
       clear.classList.add('key', 'special-key');
       clear.textContent = 'Limpar';
@@ -374,7 +636,6 @@
         updateSuggestions();
       });
       specialRow.appendChild(clear);
-
       keyboardContainer.appendChild(specialRow);
     }
 
@@ -384,7 +645,7 @@
       beepSound.play();
     }
 
-    // Atualiza as sugestões de autocompletar com base na última palavra digitada
+    // Atualiza as sugestões de autocompletar
     function updateSuggestions() {
       suggestionsDiv.innerHTML = "";
       const words = displayField.value.split(" ");
@@ -404,7 +665,7 @@
       });
     }
 
-    // Função para ler em voz alta o conteúdo do campo de exibição
+    // Função para ler em voz alta
     function speakText() {
       const text = displayField.value;
       if (text.trim() !== "") {
@@ -412,6 +673,24 @@
         utterance.lang = "pt-BR";
         window.speechSynthesis.speak(utterance);
       }
+    }
+
+    // Função para traduzir texto (usando LibreTranslate)
+    function translateText(text, targetLang) {
+      const sourceLang = "pt"; // Supondo que o reconhecimento seja em português
+      if (sourceLang === targetLang) return Promise.resolve(text);
+      return fetch('https://libretranslate.de/translate', {
+        method: 'POST',
+        body: JSON.stringify({
+          q: text,
+          source: sourceLang,
+          target: targetLang,
+          format: "text"
+        }),
+        headers: { "Content-Type": "application/json" }
+      })
+      .then(response => response.json())
+      .then(data => data.translatedText);
     }
 
     // Eventos de controle
@@ -455,34 +734,93 @@
       recognition.start();
       recognition.onresult = (event) => {
         const transcript = event.results[0][0].transcript;
-        displayField.value += transcript + " ";
-        updateSuggestions();
+        const targetLang = targetLanguageSelect.value;
+        translateText(transcript, targetLang).then(translated => {
+          displayField.value += translated + " ";
+          updateSuggestions();
+          speakText();
+        });
       };
       recognition.onerror = () => {
         alert("Erro no reconhecimento de voz.");
       };
     });
 
-    // Botão de Ler em Voz Alta em destaque
+    // Botão de Ler em Voz Alta
     readAloudBtn.addEventListener('click', () => {
       speakText();
     });
 
-    // Eventos para botões de imagem:
-    // Ao clicar, o conteúdo do campo de exibição é substituído pelo comando da imagem,
-    // as sugestões são atualizadas e o texto é lido automaticamente.
-    const imgButtons = document.querySelectorAll('.img-button');
+    // Eventos para os botões de imagem do menu principal de categorias
+    const categoryButtons = document.querySelectorAll('#categoryContainer .img-button');
+    categoryButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const category = btn.getAttribute('data-category');
+        if (category && categories[category]) {
+          renderCategoryImages(category);
+        }
+      });
+    });
+
+    // Função para renderizar as imagens de uma categoria e incluir um botão de voltar
+    function renderCategoryImages(category) {
+      // Esconde o menu principal de categorias
+      categoryContainer.style.display = "none";
+      // Exibe o container de imagens de categoria
+      imagesContainer.style.display = "flex";
+      imagesContainer.innerHTML = ""; // Limpa o container
+
+      // Cria um botão de voltar
+      const backBtn = document.createElement('button');
+      backBtn.textContent = "Voltar ao Menu";
+      backBtn.classList.add('back-button');
+      backBtn.addEventListener('click', () => {
+        imagesContainer.style.display = "none";
+        categoryContainer.style.display = "flex";
+      });
+      imagesContainer.appendChild(backBtn);
+
+      // Renderiza cada imagem da categoria
+      categories[category].forEach(item => {
+        const img = document.createElement('img');
+        img.src = item.src;
+        img.alt = item.alt;
+        img.classList.add('img-button');
+        img.setAttribute('data-phrase', " " + item.phrase + " ");
+        img.addEventListener('click', () => {
+          playFeedback();
+          displayField.value = item.phrase; // Substitui o conteúdo anterior
+          updateSuggestions();
+          speakText();
+        });
+        imagesContainer.appendChild(img);
+      });
+    }
+
+    // Eventos para os botões de imagem no menu principal (para categorias)
+    const mainMenuImgButtons = document.querySelectorAll('#imgContainer .img-button');
+    mainMenuImgButtons.forEach(img => {
+      img.addEventListener('click', () => {
+        const category = img.getAttribute('data-category');
+        if (category && categories[category]) {
+          renderCategoryImages(category);
+        }
+      });
+    });
+
+    // Eventos para botões de imagem (se estiverem fora de categorias)
+    const imgButtons = document.querySelectorAll('#imgContainer img:not([data-category])');
     imgButtons.forEach(img => {
       img.addEventListener('click', () => {
         const phrase = img.getAttribute('data-phrase') || "";
         playFeedback();
-        displayField.value = phrase; // Substitui o conteúdo anterior
+        displayField.value = phrase;
         updateSuggestions();
         speakText();
       });
     });
 
-    // Função para atualizar dinamicamente os tamanhos dos botões via variáveis CSS
+    // Função para atualizar dinamicamente os tamanhos dos botões
     function updateButtonSizes(delta) {
       const rootStyles = getComputedStyle(document.documentElement);
       let keySize = parseInt(rootStyles.getPropertyValue('--key-size'));
