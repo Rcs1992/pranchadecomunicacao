@@ -1,58 +1,129 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Quadro de Comunicação Alternativa Virtual e Multifuncional</title>
   <style>
-    /* Variáveis CSS para facilitar o ajuste dos tamanhos e cores */
+    /* Variáveis CSS */
     :root {
       --bg-gradient: linear-gradient(135deg, #7F7FD5, #86A8E7, #91EAE4);
       --text-color: #333;
       --key-bg: #fff;
       --key-border: #4A90E2;
-      --key-size: 90px;            /* Altura das teclas */
-      --key-width: 140px;          /* Largura das teclas */
-      --special-key-width: 220px;   /* Largura para teclas especiais */
-      --img-button-size: 220px;     /* Tamanho dos botões de imagem */
+      --key-size: 80px;
+      --key-width: 120px;
+      --special-key-width: 180px;
+      --img-button-size: 200px;
       --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       --transition-speed: 0.3s;
+      --sidebar-width: 250px;
+      --sidebar-bg: #fff;
+      --sidebar-border: #ccc;
+      --sidebar-shadow: 0 2px 8px rgba(0,0,0,0.3);
+      --highlight-color: #FF6600;
     }
-
     body.dark {
       --bg-gradient: linear-gradient(135deg, #1C1C1C, #3C3C3C);
       --text-color: #ddd;
       --key-bg: #555;
       --key-border: #aaa;
+      --sidebar-bg: #333;
+      --sidebar-border: #555;
     }
-
     body {
       margin: 0;
-      padding: 20px;
+      padding: 0;
       font-family: var(--font-family);
       background: var(--bg-gradient);
       color: var(--text-color);
       display: flex;
-      flex-direction: column;
-      align-items: center;
+      flex-direction: row;
       min-height: 100vh;
       transition: background var(--transition-speed);
+      overflow-x: hidden;
     }
-
-    h2 {
-      margin-bottom: 10px;
-      text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
-      text-align: center;
+    /* Sidebar com transform para transição suave */
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: var(--sidebar-width);
+      height: 100%;
+      background: var(--sidebar-bg);
+      border-right: 1px solid var(--sidebar-border);
+      box-shadow: var(--sidebar-shadow);
+      transform: translateX(-100%);
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 1000;
+      padding: 20px;
+      overflow-y: auto;
     }
-
-    /* Campo de exibição e sugestões */
-    .display-container {
-      width: 90%;
-      max-width: 800px;
+    .sidebar.open {
+      transform: translateX(0);
+    }
+    .sidebar .close-btn {
+      font-size: 1.5em;
+      border: none;
+      background: none;
+      cursor: pointer;
+      color: var(--text-color);
+      margin-bottom: 20px;
+    }
+    .sidebar .control-group {
       margin-bottom: 15px;
-      text-align: center;
     }
-
+    .sidebar select,
+    .sidebar button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      font-size: 1em;
+      border-radius: 6px;
+      border: 1px solid var(--key-border);
+      background: var(--key-bg);
+      cursor: pointer;
+      transition: background var(--transition-speed), transform var(--transition-speed);
+    }
+    .sidebar button:hover,
+    .sidebar select:hover {
+      background: #e0e0e0;
+    }
+    /* Botão Hamburger */
+    .open-sidebar-btn {
+      position: fixed;
+      left: 10px;
+      top: 10px;
+      font-size: 2em;
+      background: var(--key-bg);
+      border: 2px solid var(--key-border);
+      border-radius: 4px;
+      cursor: pointer;
+      z-index: 1100;
+      padding: 5px 10px;
+      transition: transform 0.2s;
+    }
+    .open-sidebar-btn:hover {
+      transform: scale(1.1);
+    }
+    /* Main Content */
+    .main-content {
+      margin-left: 0;
+      width: 100%;
+      padding: 20px;
+      transition: margin-left var(--transition-speed);
+    }
+    .sidebar.open ~ .main-content {
+      margin-left: var(--sidebar-width);
+    }
+    /* Exibição e Sugestões */
+    .display-container {
+      width: 100%;
+      max-width: 800px;
+      margin: 0 auto 15px;
+      text-align: center;
+      word-wrap: break-word;
+    }
     .display {
       width: 100%;
       padding: 15px;
@@ -63,12 +134,11 @@
       box-shadow: 0 8px 16px rgba(0,0,0,0.2);
       outline: none;
       transition: box-shadow var(--transition-speed);
+      word-wrap: break-word;
     }
-
     .display:focus {
       box-shadow: 0 0 0 3px rgba(74,144,226,0.4);
     }
-
     .suggestions {
       margin-top: 5px;
       display: flex;
@@ -76,7 +146,6 @@
       gap: 8px;
       justify-content: center;
     }
-
     .suggestion {
       background: var(--key-bg);
       border: 1px solid var(--key-border);
@@ -86,80 +155,26 @@
       transition: background var(--transition-speed), transform var(--transition-speed);
       font-size: 1.3em;
     }
-
     .suggestion:hover {
       background: #f0f0f0;
       transform: translateY(-2px);
     }
-
-    /* Contêiner dos controles */
-    .controls {
-      margin-bottom: 20px;
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-
-    .controls button, .controls select {
-      padding: 10px 16px;
-      font-size: 1.1em;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      background: var(--key-bg);
-      border: 2px solid var(--key-border);
-      transition: background var(--transition-speed), transform var(--transition-speed);
-    }
-
-    .controls button:hover, .controls select:hover {
-      background: #e0e0e0;
-      transform: scale(1.05);
-    }
-
-    /* Botão de Ler em Voz Alta em destaque */
-    .read-aloud-container {
-      margin-bottom: 20px;
-      width: 90%;
-      max-width: 800px;
-      text-align: center;
-    }
-
-    #readAloudBtn {
-      padding: 14px 24px;
-      font-size: 1.5em;
-      font-weight: bold;
-      background: #FFCC00;
-      border: 3px solid #E6B800;
-      border-radius: 12px;
-      cursor: pointer;
-      box-shadow: 0 6px 12px rgba(0,0,0,0.2);
-      transition: background 0.3s, transform 0.1s;
-    }
-
-    #readAloudBtn:hover {
-      background: #FFD633;
-      transform: scale(1.05);
-    }
-
-    /* Área do teclado */
+    /* Teclado Integrado (Alfabético + Numérico + Botões Especiais) */
     .keyboard-container {
-      width: 90%;
+      width: 100%;
       max-width: 800px;
-      margin-bottom: 20px;
+      margin: 0 auto 20px;
       background: rgba(255,255,255,0.8);
       padding: 20px;
       border-radius: 12px;
       box-shadow: 0 10px 20px rgba(0,0,0,0.3);
     }
-
     .key-row {
       display: flex;
       justify-content: center;
       gap: 10px;
       margin-bottom: 10px;
     }
-
     .key {
       width: var(--key-width);
       height: var(--key-size);
@@ -175,13 +190,10 @@
       font-size: 2em;
       box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     }
-
     .key:active {
       transform: scale(0.95);
       background: #f9f9f9;
     }
-
-    /* Teclas especiais */
     .special-key {
       width: var(--special-key-width);
       height: var(--key-size);
@@ -190,8 +202,33 @@
       align-items: center;
       justify-content: center;
     }
-
-    /* Área para botões de imagem ou categorias */
+    .numeric-keyboard {
+      margin-top: 15px;
+    }
+    /* Botão de Ler em Voz Alta */
+    .read-aloud-button {
+      width: 100%;
+      max-width: 800px;
+      margin: 20px auto;
+      text-align: center;
+    }
+    #readAloudBtn {
+      padding: 16px 28px;
+      font-size: 1.7em;
+      font-weight: bold;
+      background: var(--highlight-color);
+      border: 3px solid darkorange;
+      border-radius: 12px;
+      cursor: pointer;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+      transition: background 0.3s, transform 0.1s;
+      color: #fff;
+    }
+    #readAloudBtn:hover {
+      background: darkorange;
+      transform: scale(1.05);
+    }
+    /* Área para botões de imagem/categorias */
     .img-container {
       display: flex;
       flex-wrap: wrap;
@@ -199,7 +236,6 @@
       justify-content: center;
       margin-bottom: 20px;
     }
-
     .img-button {
       width: var(--img-button-size);
       height: var(--img-button-size);
@@ -210,13 +246,10 @@
       box-shadow: 0 4px 8px rgba(0,0,0,0.15);
       object-fit: cover;
     }
-
     .img-button:hover {
       transform: scale(1.05);
       box-shadow: 0 8px 16px rgba(0,0,0,0.2);
     }
-
-    /* Botão de voltar para o menu principal da categoria */
     .back-button {
       padding: 10px 20px;
       font-size: 1.2em;
@@ -227,51 +260,156 @@
       cursor: pointer;
       transition: transform 0.1s;
     }
-
     .back-button:hover {
       transform: scale(1.05);
+    }
+    /* Overlay de Mapeamento do Corpo com cabeçalho fixo */
+    .body-map-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(255,255,255,0.97);
+      z-index: 2000;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: auto;
+      padding-top: 60px;
+      animation: fadeIn 0.5s;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    .body-map-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: #fff;
+      padding: 10px 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 2100;
+    }
+    .body-map-header h2 {
+      margin: 0;
+      font-size: 1.5em;
+      text-align: center;
+      flex-grow: 1;
+    }
+    .body-map-header button {
+      padding: 8px 16px;
+      font-size: 1em;
+      background: #FF6666;
+      border: none;
+      border-radius: 4px;
+      color: #fff;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .body-map-header button:hover {
+      background: #e05555;
+    }
+    .body-image-container {
+      position: relative;
+      margin: 20px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    .body-image {
+      width: 300px;
+      height: 600px;
+      object-fit: cover;
+      display: block;
+      border-radius: 8px;
+    }
+    .marker {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: red;
+      border: 2px solid white;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
     }
   </style>
 </head>
 <body>
-  <!-- Campo de exibição e sugestões -->
-  <div class="display-container">
-    <input type="text" id="display" class="display" placeholder="Sua frase aparecerá aqui..." readonly>
-    <div class="suggestions" id="suggestions"></div>
+  <!-- Botão Hamburger -->
+  <button id="openSidebarBtn" class="open-sidebar-btn">&#9776;</button>
+
+  <!-- Sidebar -->
+  <div id="sidebar" class="sidebar">
+    <button id="closeSidebarBtn" class="close-btn">&times;</button>
+    <div class="control-group">
+      <label for="layoutSelect">Layout do Teclado:</label>
+      <select id="layoutSelect">
+        <option value="QWERTY">QWERTY</option>
+      </select>
+    </div>
+    <div class="control-group">
+      <label for="targetLanguage">Idioma (tradução):</label>
+      <select id="targetLanguage">
+        <option value="pt">Português</option>
+        <option value="en">English</option>
+        <option value="es">Español</option>
+      </select>
+    </div>
+    <div class="control-group">
+      <button id="themeToggle">Alternar Tema</button>
+    </div>
+    <div class="control-group">
+      <button id="copyBtn">Copiar</button>
+      <button id="shareBtn">Compartilhar</button>
+    </div>
+    <div class="control-group">
+      <button id="voiceBtn">Reconhecimento de Voz</button>
+    </div>
+    <div class="control-group">
+      <button id="incSizeBtn">Aumentar Botões</button>
+      <button id="decSizeBtn">Diminuir Botões</button>
+    </div>
+    <!-- Botão de Mapeamento de Dor na Sidebar -->
+    <div class="control-group">
+       </div>
   </div>
 
-  <!-- Botão de Ler em Voz Alta em destaque -->
-  <div class="read-aloud-container">
-    <button id="readAloudBtn">Ler em Voz Alta</button>
-  </div>
+  <!-- Main Content -->
+  <div class="main-content">
+    <!-- Campo de exibição e sugestões -->
+    <div class="display-container">
+      <input type="text" id="display" class="display" placeholder="Sua frase aparecerá aqui..." readonly>
+      <div class="suggestions" id="suggestions"></div>
+    </div>
 
-  <!-- Controles restantes -->
-  <div class="controls">
-    <select id="layoutSelect">
-      <option value="QWERTY">QWERTY</option>
-      <option value="AZERTY">AZERTY</option>
-      <option value="NUMERIC">Numérico</option>
-    </select>
+    <!-- Teclado Integrado (Alfabético + Numérico + Botões Especiais) -->
+    <div class="keyboard-container" id="keyboardContainer">
+      <div id="alphabetKeyboard"></div>
+      <div id="numericKeyboard" class="numeric-keyboard"></div>
+      <div class="key-row">
+        <div class="key special-key" id="backspaceKey">Back</div>
+        <div class="key special-key" id="spaceKey">Espaço</div>
+        <div class="key special-key" id="clearKey">Limpar</div>
+      </div>
+    </div>
 
-    </select>
-    <button id="themeToggle">Alternar Tema</button>
-    <button id="copyBtn">Copiar</button>
-    <button id="shareBtn">Compartilhar</button>
-    <button id="voiceBtn">Reconhecimento de Voz</button>
-    <button id="incSizeBtn">Aumentar Botões</button>
-    <button id="decSizeBtn">Diminuir Botões</button>
-  </div>
+    <!-- Botão de Ler em Voz Alta (abaixo do teclado) -->
+    <div class="read-aloud-button">
+      <button id="readAloudBtn">Ler em Voz Alta</button>
+    </div>
 
-  <!-- Área do teclado -->
-  <div class="keyboard-container" id="keyboardContainer">
-    <!-- As teclas serão renderizadas via JavaScript -->
-  </div>
-
-  <!-- Área para as categorias de botões de imagem -->
-  <h2>Menu de Categorias</h2>
-  <div class="img-container" id="categoryContainer">
-    <!-- Botões de categoria: cada um possui data-category para identificar a categoria -->
-    <img src="https://8upload.com/preview/67deab9da55c3/Call_doctor__7_.jpg" alt="Respostas" class="img-button" data-category="respostas">
+    <!-- Menu de Categorias -->
+    <h2 style="text-align: center;">Menu de Categorias</h2>
+    <div class="img-container" id="categoryContainer">
+     <img src="https://8upload.com/preview/67deab9da55c3/Call_doctor__7_.jpg" alt="Respostas" class="img-button" data-category="respostas">
     <img src="https://8upload.com/preview/67deeb4b67214/Call_doctor__15_.jpg" alt="Perguntas" class="img-button" data-category="perguntas">
     <img src="https://8upload.com/preview/67def03d8aff2/Call_doctor__21_.jpg" alt="tabela" class="img-button" data-category="tabela"> 
     <img src="https://8upload.com/preview/67deaa0417e7c/Call_doctor__6_.jpg" alt="Chamar" class="img-button" data-category="chamar">
@@ -279,19 +417,25 @@
     <img src="https://8upload.com/preview/67deac3a63ee6/Call_doctor__8_.jpg" alt="Mobilidade" class="img-button" data-category="mobilidade">
     <img src="https://8upload.com/preview/67deadf6a9bb9/Call_doctor__9_.jpg" alt="Comida" class="img-button" data-category="comida">
     <img src="https://8upload.com/preview/67deb2b51163e/37.jpg" alt="Corpo" class="img-button" data-category="corpo">
-      </div>
+    </div>
 
-  <!-- Área para os botões de imagem dentro de uma categoria -->
-  <div class="img-container" id="imagesContainer" style="display: none;">
-    <!-- Botões serão renderizados via JavaScript -->
+    <!-- Container para imagens de categoria -->
+    <div id="imgContainer" class="img-container">
+      <!-- Imagens da categoria serão renderizadas aqui -->
+    </div>
   </div>
 
-  <!-- Elemento de áudio para feedback sonoro -->
+  <!-- Overlay de Mapeamento do Corpo -->
+ 
+  <!-- Elemento de áudio -->
   <audio id="beepSound" src="https://www.soundjay.com/button/beep-07.wav"></audio>
 
   <script>
+    // Elementos comuns
     const displayField = document.getElementById('display');
     const keyboardContainer = document.getElementById('keyboardContainer');
+    const alphabetKeyboard = document.getElementById('alphabetKeyboard');
+    const numericKeyboard = document.getElementById('numericKeyboard');
     const layoutSelect = document.getElementById('layoutSelect');
     const targetLanguageSelect = document.getElementById('targetLanguage');
     const suggestionsDiv = document.getElementById('suggestions');
@@ -304,9 +448,19 @@
     const incSizeBtn = document.getElementById('incSizeBtn');
     const decSizeBtn = document.getElementById('decSizeBtn');
 
-    // Containers para as categorias e para as imagens de uma categoria
+    // Sidebar
+    const sidebar = document.getElementById('sidebar');
+    const openSidebarBtn = document.getElementById('openSidebarBtn');
+    const closeSidebarBtn = document.getElementById('closeSidebarBtn');
+
+    // Categorias
     const categoryContainer = document.getElementById('categoryContainer');
-    const imagesContainer = document.getElementById('imagesContainer');
+    const imgContainer = document.getElementById('imgContainer');
+
+    // Overlay de Mapeamento do Corpo
+    const bodyMapSection = document.getElementById('bodyMapSection');
+    const frontBody = document.getElementById('frontBody');
+    const backBody = document.getElementById('backBody');
 
     // Layouts do teclado
     const layouts = {
@@ -331,21 +485,21 @@
     // Sugestões para autocompletar
     const wordSuggestions = ["Eu", "quero", "comer", "beber", "dormir", "brincar", "jogar", "aprender", "correr", "obrigado"];
 
-    // Dados de imagens para cada categoria
+     // Dados de imagens para cada categoria
     const categories = {
       chamar: [
         {
-          src: "https://cdn.pixabay.com/photo/2025/03/20/19/22/19-22-41-622_1280.jpg",
+          src: "https://8upload.com/preview/67e140be68b8e/Call_doctor__1_.jpg",
           alt: "Chamar o médico",
           phrase: "Chamar o médico"
         },
         {
-          src: "https://cdn.pixabay.com/photo/2025/03/20/19/56/19-56-29-71_1280.jpg",
+          src: "https://8upload.com/preview/67e1413d1fb19/Call_doctor__2_.jpg",
           alt: "Chamar o fisioterapeuta",
           phrase: "Chamar o fisioterapeuta"
         },
         {
-          src: "https://cdn.pixabay.com/photo/2025/03/20/20/08/20-08-40-829_1280.jpg",
+          src: "https://8upload.com/preview/67e1410f2b2a5/nurse.jpg",
           alt: "Chamar Enfermagem",
           phrase: "Chamar Enfermagem"
         },
@@ -389,7 +543,7 @@
           phrase: "Não"
         },
         {
-          src: "https://cdn.pixabay.com/photo/2025/03/21/00/26/00-26-52-375__340.jpg",
+          src: "https://8upload.com/preview/67e1407e07c58/Call_doctor.jpg",
           alt: "Sim",
           phrase: "Sim"
         },
@@ -421,7 +575,7 @@
           phrase: "Estou com dor no peito"
         },
         {
-          src: "https://cdn.pixabay.com/photo/2025/03/20/19/56/19-56-29-848__340.jpg",
+          src: "https://8upload.com/preview/67e1417339df6/Call_doctor__3_.jpg",
           alt: "Falta de ar",
           phrase: "Estou com falta de ar"
         },
@@ -431,7 +585,7 @@
           phrase: "Eu quero ser aspirado"
         },
         {
-          src: "https://cdn.pixabay.com/photo/2025/03/21/00/21/00-21-15-70__340.jpg",
+          src: "https://8upload.com/preview/67e141b87b1ed/Call_doctor__4_.jpg",
           alt: "fralda",
           phrase: "Eu quero que troque a fralda"
         },
@@ -452,7 +606,7 @@
           phrase: "Estou com calor"
         },
         {
-          src: "https://cdn.pixabay.com/photo/2025/03/21/00/08/00-08-33-672__340.jpg",
+          src: "https://8upload.com/preview/67e141f7d4e0c/Call_doctor__5_.jpg",
           alt: "Medo",
           phrase: "Estou com medo"
         }
@@ -585,10 +739,10 @@
       ]
     };
 
-    // Função para renderizar o teclado (mesmo de antes)
-    function renderKeyboard(layoutName) {
-      keyboardContainer.innerHTML = "";
-      const rows = layouts[layoutName];
+    // Renderiza o teclado alfabético
+    function renderAlphabetKeyboard() {
+      alphabetKeyboard.innerHTML = "";
+      const rows = layouts["QWERTY"];
       if (!rows) return;
       rows.forEach(row => {
         const rowDiv = document.createElement('div');
@@ -604,48 +758,61 @@
           });
           rowDiv.appendChild(btn);
         });
-        keyboardContainer.appendChild(rowDiv);
+        alphabetKeyboard.appendChild(rowDiv);
       });
-      // Linha de teclas especiais
-      const specialRow = document.createElement('div');
-      specialRow.classList.add('key-row');
-      const backspace = document.createElement('div');
-      backspace.classList.add('key', 'special-key');
-      backspace.textContent = 'Back';
-      backspace.addEventListener('click', () => {
-        playFeedback();
-        displayField.value = displayField.value.slice(0, -1);
-        updateSuggestions();
-      });
-      specialRow.appendChild(backspace);
-      const space = document.createElement('div');
-      space.classList.add('key', 'special-key');
-      space.textContent = 'Espaço';
-      space.addEventListener('click', () => {
-        playFeedback();
-        displayField.value += ' ';
-        updateSuggestions();
-      });
-      specialRow.appendChild(space);
-      const clear = document.createElement('div');
-      clear.classList.add('key', 'special-key');
-      clear.textContent = 'Limpar';
-      clear.addEventListener('click', () => {
-        playFeedback();
-        displayField.value = '';
-        updateSuggestions();
-      });
-      specialRow.appendChild(clear);
-      keyboardContainer.appendChild(specialRow);
     }
+    // Renderiza o teclado numérico
+    function renderNumericKeyboard() {
+      numericKeyboard.innerHTML = "";
+      const rows = layouts["NUMERIC"];
+      if (!rows) return;
+      rows.forEach(row => {
+        const rowDiv = document.createElement('div');
+        rowDiv.classList.add('key-row');
+        row.forEach(key => {
+          const btn = document.createElement('div');
+          btn.classList.add('key');
+          btn.textContent = key;
+          btn.addEventListener('click', () => {
+            playFeedback();
+            displayField.value += key;
+            updateSuggestions();
+          });
+          rowDiv.appendChild(btn);
+        });
+        numericKeyboard.appendChild(rowDiv);
+      });
+    }
+    // Renderiza o teclado completo
+    function renderKeyboard() {
+      renderAlphabetKeyboard();
+      renderNumericKeyboard();
+    }
+    renderKeyboard();
+
+    // Eventos para teclas especiais
+    document.getElementById('backspaceKey')?.addEventListener('click', () => {
+      playFeedback();
+      displayField.value = displayField.value.slice(0, -1);
+      updateSuggestions();
+    });
+    document.getElementById('spaceKey')?.addEventListener('click', () => {
+      playFeedback();
+      displayField.value += ' ';
+      updateSuggestions();
+    });
+    document.getElementById('clearKey')?.addEventListener('click', () => {
+      playFeedback();
+      displayField.value = '';
+      updateSuggestions();
+    });
 
     // Função para tocar feedback sonoro
     function playFeedback() {
       beepSound.currentTime = 0;
       beepSound.play();
     }
-
-    // Atualiza as sugestões de autocompletar
+    // Atualiza sugestões
     function updateSuggestions() {
       suggestionsDiv.innerHTML = "";
       const words = displayField.value.split(" ");
@@ -664,7 +831,6 @@
         suggestionsDiv.appendChild(sug);
       });
     }
-
     // Função para ler em voz alta
     function speakText() {
       const text = displayField.value;
@@ -674,10 +840,9 @@
         window.speechSynthesis.speak(utterance);
       }
     }
-
-    // Função para traduzir texto (usando LibreTranslate)
+    // Função para traduzir usando LibreTranslate
     function translateText(text, targetLang) {
-      const sourceLang = "pt"; // Supondo que o reconhecimento seja em português
+      const sourceLang = "pt";
       if (sourceLang === targetLang) return Promise.resolve(text);
       return fetch('https://libretranslate.de/translate', {
         method: 'POST',
@@ -692,16 +857,13 @@
       .then(response => response.json())
       .then(data => data.translatedText);
     }
-
     // Eventos de controle
     layoutSelect.addEventListener('change', () => {
-      renderKeyboard(layoutSelect.value);
+      renderKeyboard();
     });
-
     themeToggle.addEventListener('click', () => {
       document.body.classList.toggle('dark');
     });
-
     copyBtn.addEventListener('click', async () => {
       try {
         await navigator.clipboard.writeText(displayField.value);
@@ -710,7 +872,6 @@
         alert("Erro ao copiar o texto.");
       }
     });
-
     shareBtn.addEventListener('click', async () => {
       if (navigator.share) {
         try {
@@ -722,7 +883,6 @@
         alert("Web Share API não suportada neste dispositivo.");
       }
     });
-
     voiceBtn.addEventListener('click', () => {
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
       if (!SpeechRecognition) {
@@ -745,13 +905,44 @@
         alert("Erro no reconhecimento de voz.");
       };
     });
-
-    // Botão de Ler em Voz Alta
     readAloudBtn.addEventListener('click', () => {
       speakText();
     });
-
-    // Eventos para os botões de imagem do menu principal de categorias
+    // Sidebar eventos
+    openSidebarBtn.addEventListener('click', () => {
+      sidebar.classList.add('open');
+    });
+    closeSidebarBtn.addEventListener('click', () => {
+      sidebar.classList.remove('open');
+    });
+    // Funções para renderizar categorias
+    function renderCategoryImages(category) {
+      categoryContainer.style.display = "none";
+      imgContainer.style.display = "flex";
+      imgContainer.innerHTML = "";
+      const backBtn = document.createElement('button');
+      backBtn.textContent = "Voltar ao Menu";
+      backBtn.classList.add('back-button');
+      backBtn.addEventListener('click', () => {
+        imgContainer.style.display = "none";
+        categoryContainer.style.display = "flex";
+      });
+      imgContainer.appendChild(backBtn);
+      categories[category].forEach(item => {
+        const img = document.createElement('img');
+        img.src = item.src;
+        img.alt = item.alt;
+        img.classList.add('img-button');
+        img.setAttribute('data-phrase', " " + item.phrase + " ");
+        img.addEventListener('click', () => {
+          playFeedback();
+          displayField.value = item.phrase;
+          updateSuggestions();
+          speakText();
+        });
+        imgContainer.appendChild(img);
+      });
+    }
     const categoryButtons = document.querySelectorAll('#categoryContainer .img-button');
     categoryButtons.forEach(btn => {
       btn.addEventListener('click', () => {
@@ -761,56 +952,9 @@
         }
       });
     });
-
-    // Função para renderizar as imagens de uma categoria e incluir um botão de voltar
-    function renderCategoryImages(category) {
-      // Esconde o menu principal de categorias
-      categoryContainer.style.display = "none";
-      // Exibe o container de imagens de categoria
-      imagesContainer.style.display = "flex";
-      imagesContainer.innerHTML = ""; // Limpa o container
-
-      // Cria um botão de voltar
-      const backBtn = document.createElement('button');
-      backBtn.textContent = "Voltar ao Menu";
-      backBtn.classList.add('back-button');
-      backBtn.addEventListener('click', () => {
-        imagesContainer.style.display = "none";
-        categoryContainer.style.display = "flex";
-      });
-      imagesContainer.appendChild(backBtn);
-
-      // Renderiza cada imagem da categoria
-      categories[category].forEach(item => {
-        const img = document.createElement('img');
-        img.src = item.src;
-        img.alt = item.alt;
-        img.classList.add('img-button');
-        img.setAttribute('data-phrase', " " + item.phrase + " ");
-        img.addEventListener('click', () => {
-          playFeedback();
-          displayField.value = item.phrase; // Substitui o conteúdo anterior
-          updateSuggestions();
-          speakText();
-        });
-        imagesContainer.appendChild(img);
-      });
-    }
-
-    // Eventos para os botões de imagem no menu principal (para categorias)
-    const mainMenuImgButtons = document.querySelectorAll('#imgContainer .img-button');
-    mainMenuImgButtons.forEach(img => {
-      img.addEventListener('click', () => {
-        const category = img.getAttribute('data-category');
-        if (category && categories[category]) {
-          renderCategoryImages(category);
-        }
-      });
-    });
-
-    // Eventos para botões de imagem (se estiverem fora de categorias)
-    const imgButtons = document.querySelectorAll('#imgContainer img:not([data-category])');
-    imgButtons.forEach(img => {
+    // Eventos para botões de imagem fora de categorias
+    const generalImgButtons = document.querySelectorAll('#imgContainer img:not([data-category])');
+    generalImgButtons.forEach(img => {
       img.addEventListener('click', () => {
         const phrase = img.getAttribute('data-phrase') || "";
         playFeedback();
@@ -819,36 +963,59 @@
         speakText();
       });
     });
-
-    // Função para atualizar dinamicamente os tamanhos dos botões
+    // Função para atualizar tamanhos dos botões
     function updateButtonSizes(delta) {
       const rootStyles = getComputedStyle(document.documentElement);
       let keySize = parseInt(rootStyles.getPropertyValue('--key-size'));
       let keyWidth = parseInt(rootStyles.getPropertyValue('--key-width'));
       let specialKeyWidth = parseInt(rootStyles.getPropertyValue('--special-key-width'));
       let imgButtonSize = parseInt(rootStyles.getPropertyValue('--img-button-size'));
-      
       keySize = Math.max(60, keySize + delta);
       keyWidth = Math.max(80, keyWidth + delta * 1.5);
       specialKeyWidth = Math.max(100, specialKeyWidth + delta * 2);
       imgButtonSize = Math.max(120, imgButtonSize + delta * 2);
-  
       document.documentElement.style.setProperty('--key-size', keySize + "px");
       document.documentElement.style.setProperty('--key-width', keyWidth + "px");
       document.documentElement.style.setProperty('--special-key-width', specialKeyWidth + "px");
       document.documentElement.style.setProperty('--img-button-size', imgButtonSize + "px");
     }
-  
-    incSizeBtn.addEventListener('click', () => {
-      updateButtonSizes(10);
-    });
-  
-    decSizeBtn.addEventListener('click', () => {
-      updateButtonSizes(-10);
-    });
-  
-    // Renderiza o teclado inicial com o layout padrão selecionado
-    renderKeyboard(layoutSelect.value);
+    incSizeBtn.addEventListener('click', () => { updateButtonSizes(10); });
+    decSizeBtn.addEventListener('click', () => { updateButtonSizes(-10); });
+
+    // Funções para mapeamento do corpo (overlay)
+    function openBodyMap() {
+      // Oculta o conteúdo principal
+      document.querySelector('.main-content').style.display = "none";
+      // Exibe o overlay de mapeamento do corpo
+      bodyMapSection.style.display = "flex";
+    }
+    function closeBodyMap() {
+      // Remove marcadores, se houver
+      const markers = bodyMapSection.querySelectorAll('.marker');
+      markers.forEach(m => m.remove());
+      // Oculta o overlay e restaura o conteúdo principal
+      bodyMapSection.style.display = "none";
+      document.querySelector('.main-content').style.display = "block";
+    }
+    function addMarker(event) {
+      const container = event.currentTarget;
+      const existingMarker = container.querySelector('.marker');
+      if (existingMarker) { existingMarker.remove(); }
+      const marker = document.createElement('div');
+      marker.classList.add('marker');
+      const rect = container.getBoundingClientRect();
+      const x = event.clientX - rect.left;
+      const y = event.clientY - rect.top;
+      marker.style.left = x + 'px';
+      marker.style.top = y + 'px';
+      container.appendChild(marker);
+      // Efeito sonoro: dizer "Dói aqui"
+      const utterance = new SpeechSynthesisUtterance("Dói aqui");
+      utterance.lang = "pt-BR";
+      window.speechSynthesis.speak(utterance);
+    }
+    frontBody.addEventListener('click', addMarker);
+    backBody.addEventListener('click', addMarker);
   </script>
 </body>
 </html>
