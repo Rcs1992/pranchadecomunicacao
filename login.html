@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Login | Solicitação de Acesso</title>
+  <style>
+    /* Seu CSS igual antes... */
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0; padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #0d47a1, #1976d2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
+      animation: fadeIn 0.6s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .logo {
+      width: 100px;
+      margin-bottom: 20px;
+    }
+    h2 {
+      color: #0d47a1;
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+    p {
+      color: #444;
+      margin-bottom: 20px;
+    }
+    .tabs {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .tab {
+      flex: 1;
+      padding: 12px;
+      cursor: pointer;
+      background: #e3eaf4;
+      color: #0d47a1;
+      transition: all 0.3s ease;
+      font-weight: 500;
+      user-select: none;
+    }
+    .tab:hover {
+      background: #d0def0;
+    }
+    .tab.active {
+      background: #0d47a1;
+      color: white;
+    }
+    input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      transition: border 0.2s;
+      font-size: 1em;
+    }
+    input:focus {
+      border-color: #0d47a1;
+      outline: none;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #0d47a1;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: background-color 0.3s ease;
+      font-size: 1em;
+    }
+    button:hover {
+      background-color: #08306b;
+    }
+    #message {
+      margin-top: 12px;
+      font-size: 0.9em;
+      min-height: 1.2em;
+      color: red;
+      user-select: none;
+    }
+    @media (max-width: 480px) {
+      .container {
+        padding: 20px;
+      }
+      h2 {
+        font-size: 1.3em;
+      }
+      .tab {
+        font-size: 0.9em;
+      }
+      input, button {
+        font-size: 1em;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <img class="logo" src="https://8upload.com/preview/6849bd9869f30/R.A.F.A..png" alt="Logo" />
+    <h2>Bem-vindo</h2>
+    <p>Faça login ou solicite acesso</p>
+
+    <div class="tabs">
+      <div class="tab active" id="loginTab">Login</div>
+      <div class="tab" id="requestTab">Solicitar Acesso</div>
+    </div>
+
+    <div id="loginForm">
+      <input type="email" id="loginEmail" placeholder="Email" />
+      <input type="password" id="loginPassword" placeholder="Senha" />
+      <button type="button" id="loginBtn">Entrar</button>
+    </div>
+
+    <div id="requestForm" style="display: none;">
+      <input type="email" id="requestEmail" placeholder="Seu email para solicitação" />
+      <button type="button" id="requestAccessBtn">Solicitar Acesso</button>
+    </div>
+
+    <p id="message"></p>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+    import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCXHpzHoMDoHUsSz0HSObSbHx8ueRZ8_F0",
+      authDomain: "rafa-bba31.firebaseapp.com",
+      projectId: "rafa-bba31",
+      storageBucket: "rafa-bba31.firebasestorage.app",
+      messagingSenderId: "115601062100",
+      appId: "1:115601062100:web:dce8479ec545c4489fa341"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const loginTab = document.getElementById('loginTab');
+    const requestTab = document.getElementById('requestTab');
+    const loginForm = document.getElementById('loginForm');
+    const requestForm = document.getElementById('requestForm');
+    const message = document.getElementById('message');
+
+    // Função para alternar abas
+    function switchTab(tab) {
+      if (tab === 'login') {
+        loginTab.classList.add('active');
+        requestTab.classList.remove('active');
+        loginForm.style.display = 'block';
+        requestForm.style.display = 'none';
+      } else if (tab === 'request') {
+        loginTab.classList.remove('active');
+        requestTab.classList.add('active');
+        loginForm.style.display = 'none';
+        requestForm.style.display = 'block';
+      }
+      message.textContent = '';
+      message.style.color = 'red';
+    }
+
+    loginTab.addEventListener('click', () => switchTab('login'));
+    requestTab.addEventListener('click', () => switchTab('request'));
+
+    // Função login
+    async function login() {
+      const email = document.getElementById("loginEmail").value.trim();
+      const password = document.getElementById("loginPassword").value;
+
+      if (!email || !password) {
+        message.style.color = "red";
+        message.textContent = "Por favor, preencha email e senha.";
+        return;
+      }
+
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+        window.location.href = "index.html"; // Ajuste para a página que quiser
+      } catch (error) {
+        message.style.color = "red";
+        message.textContent = "Erro ao logar: " + error.message;
+      }
+    }
+
+    document.getElementById('loginBtn').addEventListener('click', login);
+
+    // Função para solicitar acesso
+    async function requestAccess() {
+      const email = document.getElementById("requestEmail").value.trim();
+
+      if (!email) {
+        message.style.color = "red";
+        message.textContent = "Por favor, insira um email válido.";
+        return;
+      }
+
+      try {
+        await addDoc(collection(db, "solicitacoesAcesso"), {
+          email: email,
+          criadoEm: serverTimestamp()
+        });
+        message.style.color = "green";
+        message.textContent = "Solicitação enviada com sucesso! Aguarde nosso contato.";
+        document.getElementById("requestEmail").value = "";
+      } catch (error) {
+        message.style.color = "red";
+        message.textContent = "Erro ao enviar solicitação: " + error.message;
+      }
+    }
+
+    document.getElementById('requestAccessBtn').addEventListener('click', requestAccess);
+  </script>
+
+</body>
+</html>
