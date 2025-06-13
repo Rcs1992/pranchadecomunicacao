@@ -354,6 +354,29 @@
       font-style: italic;
     }
   </style>
+ <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCXHpzHoMDoHUsSz0HSObSbHx8ueRZ8_F0",
+    authDomain: "rafa-bba31.firebaseapp.com",
+    projectId: "rafa-bba31",
+    storageBucket: "rafa-bba31.firebasestorage.app",
+    messagingSenderId: "115601062100",
+    appId: "1:115601062100:web:dce8479ec545c4489fa341"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+  // Redireciona se não estiver logado
+  onAuthStateChanged(auth, (user) => {
+    if (!user) {
+      window.location.href = "login.html";
+    }
+  });
+</script>  
 </head>
 <body>
   <!-- Botão Hamburger -->
@@ -1144,9 +1167,37 @@
     }
     frontBody.addEventListener('click', addMarker);
     backBody.addEventListener('click', addMarker);
+</script>
+    <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+  import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCXHpzHoMDoHUsSz0HSObSbHx8ueRZ8_F0",
+    authDomain: "rafa-bba31.firebaseapp.com",
+    projectId: "rafa-bba31",
+    storageBucket: "rafa-bba31.firebasestorage.app",
+    messagingSenderId: "115601062100",
+    appId: "1:115601062100:web:dce8479ec545c4489fa341"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+  window.logout = () => {
+    signOut(auth)
+      .then(() => {
+        window.location.href = "login.html";
+      })
+      .catch((error) => {
+        alert("Erro ao sair: " + error.message);
+      });
+  };
   </script>
+
     <footer class="footer">
     <p>Rodrigo Cavalcante - CREFITO 2 / 242633-F - Fisioterapeuta - CER LEBLON</p>
   </footer>
+</script>
 </body>
 </html>
